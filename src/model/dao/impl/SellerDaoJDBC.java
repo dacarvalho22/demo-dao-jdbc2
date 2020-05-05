@@ -25,7 +25,7 @@ public class SellerDaoJDBC implements SellerDao {
 	Department dep = null;
 
 	public SellerDaoJDBC(Connection conn) {
-	 this.conn = conn;
+		this.conn = conn;
 	}
 
 	@Override
@@ -90,9 +90,29 @@ public class SellerDaoJDBC implements SellerDao {
 	}
 
 	@Override
-	public List<Seller> findAll(Seller obj) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Seller> findAll() {
+		List<Seller> lista = new ArrayList<Seller>();
+		PreparedStatement st = null;
+		ResultSet rs = null;		
+		try{
+			conn = DB.getConnetion();
+			String sql = "SELECT seller.*,department.Name as DepName "
+					+ " FROM seller INNER JOIN department "  
+					+ " ON seller.DepartmentId = department.Id "  
+					+ " ORDER BY Name";
+			st  = conn.prepareStatement(sql);			
+			rs = st.executeQuery();
+			while(rs.next()) {
+				dep = instantiateDepartment(rs);
+				obj = instantiateSeller(rs, dep);
+				lista.add(obj);
+			}
+			return lista;
+		}catch(SQLException e){
+			throw new DbException("Erro ao buscar dados no banco de dados. " + e.getMessage());
+		}finally {
+			DB.closeStatement(st, rs);
+		}				
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public interface SellerDao {
 
 	Seller findById(Integer id);
 
-	List<Seller> findAll(Seller obj);
+	List<Seller> findAll();
 	
 	List<Seller> findByDepart(Department dep);
 }
