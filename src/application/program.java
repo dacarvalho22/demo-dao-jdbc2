@@ -2,6 +2,7 @@ package application;
 
 import java.util.Date;
 
+import model.dao.DaoFactury;
 import model.entities.Department;
 import model.entities.Seller;
 
@@ -14,6 +15,8 @@ public class program {
 		Seller seller = new Seller(10, "Daniel" , "daniel@hotmail.com", new Date(), 2500.0, depart);
 		
 		System.out.println(seller);
+		
+		DaoFactury.createSellerDao();
 
 	}
 
