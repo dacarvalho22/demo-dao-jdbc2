@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -18,9 +20,9 @@ import model.entities.Seller;
 public class SellerDaoJDBC implements SellerDao {
 
 	private SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-	private Connection conn = DB.getConnetion();
-	Seller seller = null;
-	Department dept = null;
+	private Connection conn = null;
+	Seller obj = null;
+	Department dep = null;
 
 	public SellerDaoJDBC(Connection conn) {
 	 this.conn = conn;
@@ -56,9 +58,9 @@ public class SellerDaoJDBC implements SellerDao {
 			st.setInt(1, id); // 2
 			rs = st.executeQuery();
 			if (rs.next()) {
-				dept = instantiateDepartment(rs);
-				seller = instantiateSeller(rs, dept);
-				return seller;
+				dep = instantiateDepartment(rs);
+				obj = instantiateSeller(rs, dep);
+				return obj;
 			}
 			return null;
 		} catch (SQLException e) {
@@ -91,6 +93,40 @@ public class SellerDaoJDBC implements SellerDao {
 	public List<Seller> findAll(Seller obj) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Seller> findByDepart(Department dep) {		
+		Map<Integer, Department> listaMap = new HashMap<Integer, Department>();
+		List<Seller> lista = new ArrayList<Seller>();
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			conn = DB.getConnetion();
+			String sql = "SELECT seller.*,department.Name as DepName " 
+					+ " FROM seller INNER JOIN department " 
+					+ " ON seller.DepartmentId = department.Id "  
+					+ " WHERE DepartmentId = ? " 
+					+ " ORDER BY Name ";
+			st = conn.prepareStatement(sql);
+			st.setInt(1, dep.getIdDepart()); // 2
+			rs = st.executeQuery();	
+			while(rs.next()) {	
+			   	dep = listaMap.get(rs.getInt("DepartmentId"));
+				if(dep == null) {
+					dep = instantiateDepartment(rs);
+					listaMap.put(rs.getInt("DepartmentId"), dep);
+				}				
+				obj = instantiateSeller(rs, dep);
+				lista.add(obj);		 
+			}					
+			return lista;
+		}catch(SQLException e) {
+			throw new DbException("Erro ao buscar dados no banco de dados. " + e.getMessage());
+		}finally {
+			DB.closeStatement(st, rs);
+		}	
+		
 	}
 
 }
