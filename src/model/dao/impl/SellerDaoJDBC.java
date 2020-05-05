@@ -19,7 +19,6 @@ import model.entities.Seller;
 
 public class SellerDaoJDBC implements SellerDao {
 
-	private SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 	private Connection conn = null;
 	Seller obj = null;
 	Department dep = null;
@@ -30,8 +29,36 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void insert(Seller obj) {
-		// TODO Auto-generated method stub
-
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			conn = DB.getConnetion();
+			String sql = "INSERT INTO seller "  
+					+ " (Name, Email, BirthDate, BaseSalary, DepartmentId) " 
+					+ " VALUES "  
+					+ " (?, ?, ?, ?, ?) ";
+			st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			st.setString(1, obj.getNameSeller());
+			st.setString(2, obj.getEmailSelle());
+			st.setDate(3, new java.sql.Date((obj.getBirthDateSeller()).getTime()));
+			st.setDouble(4, obj.getBaseSalarySeller());
+			st.setInt(5, obj.getDepartment().getIdDepart());
+			int rows = st.executeUpdate();
+			if(rows > 0){		
+				rs = st.getGeneratedKeys();
+				if(rs.next()) {
+					int id = rs.getInt(1);
+					obj.setIdSeller(id);
+					System.out.println("Dados inseridos com sucesso. " + id);
+				}				
+			}else {
+				throw new DbException("Erro ao inserir dados na tabela. ");
+			}			
+		} catch (SQLException e) {
+			throw new DbException("Erro ao busca id do seller. " + e.getMessage());
+		} finally {
+			DB.closeStatement(st, rs);
+		}
 	}
 
 	@Override
@@ -67,7 +94,6 @@ public class SellerDaoJDBC implements SellerDao {
 			throw new DbException("Erro ao busca id do seller. " + e.getMessage());
 		} finally {
 			DB.closeStatement(st, rs);
-			// DB.closeConnection();
 		}
 	}
 
