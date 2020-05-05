@@ -1,6 +1,7 @@
 package model.dao.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,15 +63,42 @@ public class SellerDaoJDBC implements SellerDao {
 	}
 
 	@Override
-	public void update(Seller obj) {
-		// TODO Auto-generated method stub
-
+	public void update(Seller obj) {		
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			conn = DB.getConnetion();
+			String sql = "UPDATE seller " 
+					+ " SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "  
+					+ " WHERE Id = ? ";			
+			st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			st.setString(1, obj.getNameSeller());
+			st.setString(2, obj.getEmailSelle());
+			st.setDate(3, new java.sql.Date(obj.getBirthDateSeller().getTime()));
+			st.setDouble(4, obj.getBaseSalarySeller());
+			st.setInt(5, obj.getDepartment().getIdDepart());
+			st.setInt(6, obj.getIdSeller());
+			
+			int rows = st.executeUpdate();
+			if(rows > 0) {
+				rs = st.getGeneratedKeys();
+				if(rs.next()) {
+					int idBd = rs.getInt(1);
+					System.out.println("Dados atualizados com sucesso: " + idBd);
+				}
+			}else {
+				throw new DbException("Erro ao atualizar dados. ");
+			}		
+		} catch (SQLException e) {
+			throw new DbException("Erro ao busca id do seller. " + e.getMessage());
+		} finally {
+			DB.closeStatement(st, rs);
+		}
 	}
 
 	@Override
 	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override

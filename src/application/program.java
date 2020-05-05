@@ -38,8 +38,20 @@ public class program {
 		Date data  = formato.parse("01/01/2020");
 		Department dep2 = new Department(3, "Fashion");
 		Seller obj4 = new Seller(null, "Flávia", "flavia@gmail.com", data, 2500.0, dep2);
-		sellerDao.insert(obj4);
-		System.out.println("Insert: " + obj4.getIdSeller() );
+		//sellerDao.insert(obj4);
+		//System.out.println("Insert: " + obj4.getIdSeller() );
+		
+		System.out.println("\n=== TESTE 5 : seller update ====");
+		Date datas  = formato.parse("01/01/1984");
+		Department dep3 = new Department(3, null);
+		Seller obj5 = new Seller(19, "Flávia", "flavia@gmail.com", datas, 2500.0, dep3);
+		sellerDao.update(obj5);
+		System.out.println("update: " + obj5.getIdSeller() );
+		
+		//System.out.println("\n=== TESTE 6 : seller delete ====");		
+		//sellerDao.deleteById(obj5.getIdSeller());
+		//System.out.println("delete: " + obj5.getIdSeller() );
+		
 	}
 
 }
