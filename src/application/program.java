@@ -10,9 +10,12 @@ public class program {
 		
 		
 		SellerDao sellerDao = DaoFactury.createSellerDao();
-		Seller obj  = sellerDao.findById(3);
 		
+		System.out.println("=== TESTE 1 : seller findById ====");
+		Seller obj  = sellerDao.findById(3);
 		System.out.println(obj);
+		
+	
 
 	}
 
