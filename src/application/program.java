@@ -45,12 +45,12 @@ public class program {
 		Date datas  = formato.parse("01/01/1984");
 		Department dep3 = new Department(3, null);
 		Seller obj5 = new Seller(19, "Flávia", "flavia@gmail.com", datas, 2500.0, dep3);
-		sellerDao.update(obj5);
-		System.out.println("update: " + obj5.getIdSeller() );
+		//sellerDao.update(obj5);
+		//System.out.println("update: " + obj5.getIdSeller() );
 		
-		//System.out.println("\n=== TESTE 6 : seller delete ====");		
-		//sellerDao.deleteById(obj5.getIdSeller());
-		//System.out.println("delete: " + obj5.getIdSeller() );
+		System.out.println("\n=== TESTE 6 : seller delete ====");		
+		sellerDao.deleteById(9);
+		System.out.println("delete: " + obj5.getIdSeller() );
 		
 	}
 
